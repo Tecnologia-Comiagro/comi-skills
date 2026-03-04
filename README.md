@@ -1,7 +1,7 @@
 # Comiagro Skills IA
 
-**Autor:** Jorge Ivan Reyes Valencia — jorge.reyes@comiagro.com
-**Empresa:** Comiagro S.A
+### **Empresa:** Comiagro S.A
+### **Autor:** Jorge Ivan Reyes Valencia — jorge.reyes@comiagro.com
 
 Librería de skills compartida para **Claude Code** y **OpenAI Codex** en Comiagro.
 
