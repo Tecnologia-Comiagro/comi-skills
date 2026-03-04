@@ -31,6 +31,50 @@ Un skill es un archivo markdown que le da al agente de IA conocimiento especiali
 
 ---
 
+## quarkus-architect — el skill para elegir arquitectura
+
+Cuando no estás seguro de qué arquitectura usar en un proyecto Quarkus, instala `quarkus-architect` y el agente te guía paso a paso:
+
+**¿Qué hace?**
+
+1. **Step 0 — Convención de errores:** te pide definir el prefijo de tu empresa/sistema (ej. `ORD`, `PAY`, `AUTH`). Ese prefijo se usa en todos los códigos de error del proyecto y queda documentado en `CONVENTIONS.md`.
+
+2. **Step 1 — 6 preguntas clave:**
+   - ¿Qué tan complejo es el dominio?
+   - ¿Cuántas integraciones externas hay?
+   - ¿Cómo son los patrones de lectura/escritura?
+   - ¿Cuántos equipos/features?
+   - ¿Cuánto tiempo de vida tiene el servicio?
+   - ¿Puede cambiar de framework o base de datos?
+
+3. **Step 2 — Matriz de decisión:** cruza complejidad del dominio vs. cantidad de integraciones y recomienda la arquitectura óptima.
+
+4. **Step 3 — Comparación:** explica pros y contras de cada arquitectura para que el equipo entienda el razonamiento.
+
+5. **Step 4 — Patrones comunes:** aplica reglas universales independientemente de la arquitectura elegida (exception handling, validación, logging, health checks, seguridad, cobertura ≥80%).
+
+6. **Step 5 — Rutas de migración:** si el proyecto crece y necesitas cambiar de Layered a Hexagonal, o de Hexagonal a CQRS, el skill explica cómo hacerlo.
+
+7. **Step 6 — Scaffolding:** una vez elegida la arquitectura, delega al skill correspondiente (`quarkus-hexagonal`, `quarkus-layered`, etc.) para generar la estructura de carpetas, patrones y código base.
+
+**Cuándo usarlo:**
+
+```
+Proyecto nuevo sin arquitectura definida  → quarkus-architect
+Ya sé que quiero hexagonal imperativo     → quarkus-hexagonal (directo)
+Ya sé que quiero reactivo                 → quarkus-hexagonal-reactive (directo)
+```
+
+**Ejemplo de uso en Claude Code:**
+
+```
+/quarkus-architect choose
+```
+
+El agente hace las preguntas, recomienda la arquitectura y aplica el skill correspondiente en el mismo flujo.
+
+---
+
 ## Estructura del repositorio
 
 ```
