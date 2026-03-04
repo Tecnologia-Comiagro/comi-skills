@@ -1,0 +1,55 @@
+SKILLS_DIR  := $(HOME)/.claude/skills
+SKILL_FILES := $(shell find . -name 'SKILL.md' -not -path './.git/*')
+
+.PHONY: install uninstall list help
+
+## install [SKILL=name]: Install one skill (SKILL=name) or all skills
+install:
+ifdef SKILL
+	@f=$$(find . -name 'SKILL.md' -not -path './.git/*' \
+	      -exec awk -v t="$(SKILL)" '/^name:/{if($$2==t)print FILENAME}' {} \;); \
+	if [ -z "$$f" ]; then echo "  ERROR: skill '$(SKILL)' not found"; exit 1; fi; \
+	dest="$(SKILLS_DIR)/$(SKILL)"; \
+	mkdir -p "$$dest"; \
+	cp "$$f" "$$dest/SKILL.md"; \
+	echo "  ✓  $(SKILL)  →  $$dest"
+else
+	@echo "► Claude  →  $(SKILLS_DIR)"
+	@for f in $(SKILL_FILES); do \
+		name=$$(awk '/^name:/{print $$2; exit}' "$$f"); \
+		[ -z "$$name" ] && echo "  SKIP $$f (no name)" && continue; \
+		dest="$(SKILLS_DIR)/$$name"; \
+		mkdir -p "$$dest"; \
+		cp "$$f" "$$dest/SKILL.md"; \
+		echo "  ✓  $$name"; \
+	done
+endif
+
+## uninstall [SKILL=name]: Remove one skill (SKILL=name) or all skills
+uninstall:
+ifdef SKILL
+	@dest="$(SKILLS_DIR)/$(SKILL)"; \
+	[ -d "$$dest" ] && rm -rf "$$dest" && echo "  ✗  $(SKILL)" || echo "  SKIP: '$(SKILL)' not installed"
+else
+	@echo "► Removing from Claude..."
+	@for f in $(SKILL_FILES); do \
+		name=$$(awk '/^name:/{print $$2; exit}' "$$f"); \
+		dest="$(SKILLS_DIR)/$$name"; \
+		[ -d "$$dest" ] && rm -rf "$$dest" && echo "  ✗  $$name" || true; \
+	done
+endif
+
+## list: Show all skills and install status
+list:
+	@printf "%-30s %-22s %s\n" "SKILL" "SOURCE" "STATUS"
+	@printf "%-30s %-22s %s\n" "─────" "──────" "──────"
+	@for f in $(SKILL_FILES); do \
+		name=$$(awk '/^name:/{print $$2; exit}' "$$f"); \
+		src=$$(dirname "$$f" | sed 's|^\./||'); \
+		[ -f "$(SKILLS_DIR)/$$name/SKILL.md" ] && status="installed" || status="─"; \
+		printf "%-30s %-22s %s\n" "$$name" "$$src" "$$status"; \
+	done
+
+## help: Show available targets
+help:
+	@grep -E '^## ' Makefile.claude | sed 's/## /  /'
