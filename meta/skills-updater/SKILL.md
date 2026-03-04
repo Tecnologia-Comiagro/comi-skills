@@ -1,12 +1,24 @@
 ---
 name: skills-updater
 description: Review, validate and update skills in the comi-skills repository. Use when the user wants to update a skill to a new framework version, add missing patterns, check for outdated code, audit breaking changes, or run the periodic skill maintenance checklist.
+license: MIT
 argument-hint: "[action: audit|update-versions|add-section|breaking-changes] [skill-name?]"
 metadata:
   short-description: Keep comi-skills up to date with latest versions and patterns
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are the maintainer of the **comi-skills** repository. Your job is to keep every skill accurate, up to date, and complete. Apply the process below before making any changes.
+
+## When to Apply
+
+- Running the **quarterly audit** of all skills to check for outdated versions or patterns
+- A new major Quarkus version was released and skills need updating
+- A pattern in an existing skill was found to be incorrect or outdated
+- Adding a new skill to the repository following the correct structure
+- Checking if breaking changes in a dependency affect existing skill code examples
+- The user asks "are the skills up to date?" or "update the skills for Quarkus X.Y"
 
 ---
 
@@ -52,42 +64,42 @@ quarkus ext list --installable | grep <extension-name>
 ```
 
 For each Quarkus skill, verify:
-- [ ] `quarkus-maven-plugin` version in scaffolding section is current
-- [ ] All extension names match the current Quarkus catalog (names change between major versions)
-- [ ] `application.properties` keys are valid (keys are renamed in major versions)
-- [ ] JDK version in Dockerfiles matches the current LTS (Java 21 as of 2025)
-- [ ] `FROM` base images in Dockerfiles are not end-of-life
+- [ ] **[HIGH]** `quarkus-maven-plugin` version in scaffolding section is current
+- [ ] **[HIGH]** All extension names match the current Quarkus catalog (names change between major versions)
+- [ ] **[HIGH]** `application.properties` keys are valid (keys are renamed in major versions)
+- [ ] **[MEDIUM]** JDK version in Dockerfiles matches the current LTS (Java 21 as of 2025)
+- [ ] **[MEDIUM]** `FROM` base images in Dockerfiles are not end-of-life
 
 ### 1.2 Pattern Validity Check
 
 For each code example in a skill, verify:
-- [ ] Imports still exist in the current version
-- [ ] Annotations haven't been renamed or moved (`@WithTransaction` was added in Quarkus 2.x)
-- [ ] Deprecated APIs replaced with current equivalents
-- [ ] Test APIs (`UniAssertSubscriber`, `@QuarkusTest`) still work as documented
+- [ ] **[CRITICAL]** Imports still exist in the current version
+- [ ] **[CRITICAL]** Annotations haven't been renamed or moved (`@WithTransaction` was added in Quarkus 2.x)
+- [ ] **[HIGH]** Deprecated APIs replaced with current equivalents
+- [ ] **[HIGH]** Test APIs (`UniAssertSubscriber`, `@QuarkusTest`) still work as documented
 
 ### 1.3 Completeness Check
 
 For each skill, verify coverage of:
-- [ ] Project scaffolding (create from scratch)
-- [ ] Core architecture patterns
-- [ ] Exception handling (global, typed)
-- [ ] Testing (unit, integration, coverage ≥ 80%)
-- [ ] Value Objects / rich domain model
-- [ ] Mapper pattern
-- [ ] Logging conventions
-- [ ] Health checks
-- [ ] Pagination
-- [ ] Security (JWT)
-- [ ] Observability (metrics + tracing)
-- [ ] DB migrations
-- [ ] Config management
-- [ ] Messaging / events
-- [ ] Resilience patterns
-- [ ] Containerization
-- [ ] OpenAPI docs
-- [ ] Idempotency
-- [ ] Outbox pattern
+- [ ] **[HIGH]** Project scaffolding (create from scratch)
+- [ ] **[HIGH]** Core architecture patterns
+- [ ] **[CRITICAL]** Exception handling (global, typed)
+- [ ] **[HIGH]** Testing (unit, integration, coverage ≥ 80%)
+- [ ] **[HIGH]** Value Objects / rich domain model
+- [ ] **[MEDIUM]** Mapper pattern
+- [ ] **[MEDIUM]** Logging conventions
+- [ ] **[MEDIUM]** Health checks
+- [ ] **[MEDIUM]** Pagination
+- [ ] **[HIGH]** Security (JWT)
+- [ ] **[MEDIUM]** Observability (metrics + tracing)
+- [ ] **[HIGH]** DB migrations
+- [ ] **[MEDIUM]** Config management
+- [ ] **[MEDIUM]** Messaging / events
+- [ ] **[MEDIUM]** Resilience patterns
+- [ ] **[LOW]** Containerization
+- [ ] **[MEDIUM]** OpenAPI docs
+- [ ] **[MEDIUM]** Idempotency
+- [ ] **[MEDIUM]** Outbox pattern
 
 ---
 

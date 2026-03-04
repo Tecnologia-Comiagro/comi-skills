@@ -1,12 +1,24 @@
 ---
 name: quarkus-cqrs
 description: Scaffold or extend a Quarkus project using CQRS (Command Query Responsibility Segregation). Use when read and write loads differ significantly, when reporting queries are complex, or when write operations require strict consistency while reads can be eventually consistent.
+license: MIT
 argument-hint: "[action: scaffold|add-command|add-query|add-projection] [name?]"
 metadata:
   short-description: Quarkus CQRS — separate command and query models
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project using **CQRS (Command Query Responsibility Segregation)**. Apply all patterns below. Read existing code before making changes.
+
+## When to Apply
+
+- Read and write loads are **asymmetric** — many more reads than writes, or vice versa
+- Reporting queries are **complex and slow** when using the same model as writes
+- Adding a command handler, query handler, or read model projection
+- The service needs an **audit trail** — every write is an explicit command with a handler
+- Integrating event-driven projections via Kafka to update read models
+- Existing service is bottlenecked because reads and writes share the same ORM model
 
 ---
 
@@ -264,3 +276,17 @@ class GetOrderQueryHandlerTest {
 **Two write targets** — command handler writes to the normalized write model; projection updater writes to the read model. Use the **Outbox Pattern** to guarantee both succeed.
 
 **Don't query the write model** — the read side has its own repository. Never inject `WriteOrderRepository` into a query handler.
+
+---
+
+## Pre-commit Checklist
+
+- [ ] **[CRITICAL]** Global exception handler present — `DomainExceptionMapper` never exposes raw exceptions to clients
+- [ ] **[CRITICAL]** `WriteOrderRepository` is never injected into a query handler — read and write sides are strictly separate
+- [ ] **[CRITICAL]** Command handler publishes a domain event after every successful write (for projection sync)
+- [ ] **[HIGH]** Outbox pattern applied — both write model and event publication are atomic
+- [ ] **[HIGH]** Coverage ≥ 80% — command handlers and query handlers are the critical paths
+- [ ] **[HIGH]** Flyway migrations used for both write and read model tables
+- [ ] **[MEDIUM]** Read model queries use native SQL or views — no ORM overhead on the read side
+- [ ] **[MEDIUM]** OpenAPI annotations present on all command and query endpoints
+- [ ] **[LOW]** Eventual consistency documented in API contract — clients know GET after POST may return stale data

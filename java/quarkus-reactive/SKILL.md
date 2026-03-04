@@ -1,12 +1,24 @@
 ---
 name: quarkus-hexagonal-reactive
 description: Scaffold, validate or extend a Quarkus project following Hexagonal Architecture (Ports & Adapters) with Clean Code and Reactive (Mutiny) patterns. Use when the user wants to create reactive use cases, add domain logic, validate reactive patterns, or work with Mutiny Uni/Multi in a Quarkus hexagonal project.
+license: MIT
 argument-hint: "[action: scaffold|add-usecase|reactive-check|add-domain-logic] [name?]"
 metadata:
   short-description: Quarkus Hexagonal + Clean Use Cases + Reactive Mutiny Stack
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project that follows **Hexagonal Architecture (Ports & Adapters)** with **Clean Use Cases** and **Reactive (Mutiny)** patterns. Apply all rules below without deviation. Read existing code before making changes.
+
+## When to Apply
+
+- Building a service that requires **high concurrency or non-blocking I/O** (thousands of simultaneous connections)
+- Adding reactive use cases (`Uni<T>`, `Multi<T>`) to a hexagonal project
+- Streaming data to clients (Server-Sent Events, chunked responses)
+- Integrating with **reactive databases** (Hibernate Reactive + Panache Reactive)
+- Validating that reactive pipelines don't block the event loop
+- The service connects to reactive Kafka producers/consumers via SmallRye Reactive Messaging
 
 ---
 
@@ -486,15 +498,15 @@ public class OrderPanacheAdapter implements OrderRepository,
 
 When reviewing or generating code, verify each point:
 
-- [ ] **Uni/Multi?** Every I/O operation (DB, external API) returns `Uni<T>` or `Multi<T>`
-- [ ] **@WithTransaction** used in the application layer (service), never in domain or REST resource
-- [ ] **No blocking** inside a reactive chain — no `.await().indefinitely()` in production code
-- [ ] **Rich model** — business rules and state transitions live in domain entities, not in services
-- [ ] **Records for DTOs** — `OrderRequest`, `OrderResponse` are Java records (immutable)
-- [ ] **Ports are interfaces** — all ports in `domain/port/` are pure Java interfaces
-- [ ] **Layer mapping** — REST resource returns `OrderResponse`, never `OrderEntity` or `Order` directly
-- [ ] **Exception codes** — every new exception has a `DomainErrorCode` entry with its `httpStatus`
-- [ ] **Single Responsibility** — one service class per use case, no God services
+- [ ] **[CRITICAL]** **Uni/Multi?** Every I/O operation (DB, external API) returns `Uni<T>` or `Multi<T>`
+- [ ] **[CRITICAL]** **@WithTransaction** used in the application layer (service), never in domain or REST resource
+- [ ] **[CRITICAL]** **No blocking** inside a reactive chain — no `.await().indefinitely()` in production code
+- [ ] **[HIGH]** **Rich model** — business rules and state transitions live in domain entities, not in services
+- [ ] **[MEDIUM]** **Records for DTOs** — `OrderRequest`, `OrderResponse` are Java records (immutable)
+- [ ] **[HIGH]** **Ports are interfaces** — all ports in `domain/port/` are pure Java interfaces
+- [ ] **[HIGH]** **Layer mapping** — REST resource returns `OrderResponse`, never `OrderEntity` or `Order` directly
+- [ ] **[CRITICAL]** **Exception codes** — every new exception has a `DomainErrorCode` entry with its `httpStatus`
+- [ ] **[HIGH]** **Single Responsibility** — one service class per use case, no God services
 
 ---
 
@@ -1431,11 +1443,11 @@ public class OutboxPublisher {
 
 ## Adding a New Use Case (checklist)
 
-1. **Domain**: add `record InputRequest(...)` in `domain/dto/`
-2. **Domain**: add interface `NombreUseCase` in `domain/port/inbound/` returning `Uni<T>`
-3. **Domain**: add outbound port interface(s) in `domain/port/outbound/` if new I/O is needed
-4. **Domain**: add exception(s) in `domain/exception/` + entry in `DomainErrorCode`
-5. **Application**: create `NombreService implements NombreUseCase` in `application/service/` with `@WithTransaction`
-6. **Infrastructure**: create/update reactive adapter in `infrastructure/adapter/persistence/`
-7. **Infrastructure**: add `@Path` method in the REST resource in `infrastructure/adapter/rest/`
-8. **Domain**: add new `DomainErrorCode` entry with `httpStatus` — the mapper updates itself automatically
+1. **[HIGH]** **Domain**: add `record InputRequest(...)` in `domain/dto/`
+2. **[HIGH]** **Domain**: add interface `NombreUseCase` in `domain/port/inbound/` returning `Uni<T>`
+3. **[HIGH]** **Domain**: add outbound port interface(s) in `domain/port/outbound/` if new I/O is needed
+4. **[CRITICAL]** **Domain**: add exception(s) in `domain/exception/` + entry in `DomainErrorCode`
+5. **[CRITICAL]** **Application**: create `NombreService implements NombreUseCase` in `application/service/` with `@WithTransaction`
+6. **[HIGH]** **Infrastructure**: create/update reactive adapter in `infrastructure/adapter/persistence/`
+7. **[HIGH]** **Infrastructure**: add `@Path` method in the REST resource in `infrastructure/adapter/rest/`
+8. **[CRITICAL]** **Domain**: add new `DomainErrorCode` entry with `httpStatus` — the mapper updates itself automatically

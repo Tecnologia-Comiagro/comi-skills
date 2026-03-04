@@ -1,12 +1,24 @@
 ---
 name: quarkus-hexagonal
 description: Scaffold, validate or extend a Quarkus project following Hexagonal Architecture (Ports & Adapters). Use when the user wants to create a new module, validate architecture compliance, add domain exceptions, add REST resources, or understand how the layers connect in Quarkus.
+license: MIT
 argument-hint: "[action: scaffold|validate|add-module|add-exception|add-resource] [name?]"
 metadata:
   short-description: Quarkus Hexagonal Architecture scaffold & patterns
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project that follows **Hexagonal Architecture (Ports & Adapters)**. Apply all patterns below without deviation. Read existing code before making changes.
+
+## When to Apply
+
+- Starting a new Quarkus service with **multiple external integrations** (DB + Kafka + REST APIs)
+- Adding a new module, use case, or domain exception to an existing hexagonal project
+- Validating that existing code respects port/adapter boundaries
+- The project needs **high testability** — use cases must run without a database
+- Replacing an adapter (switching DB engines, messaging systems) without touching business logic
+- Reviewing whether a class belongs in domain, application, or infrastructure layer
 
 ---
 
@@ -1596,15 +1608,15 @@ public class OutboxPublisher {
 
 ## Adding a New Module (checklist)
 
-1. **Domain**: add input DTOs in `domain/dto/`, result models in `domain/model/`
-2. **Domain**: define inbound port interface in `domain/port/inbound/`
-3. **Domain**: define outbound port interface(s) in `domain/port/outbound/`
-4. **Domain**: add new exceptions in `domain/exception/` + entry in `DomainErrorCode`
-5. **Application**: create `@ApplicationScoped` service implementing the inbound port in `application/service/`
-6. **Infrastructure**: create persistence adapter implementing outbound port in `infrastructure/adapter/persistence/`
-7. **Infrastructure**: create `@Entity` + mapper in the same persistence package
-8. **Infrastructure**: create JAX-RS resource in `infrastructure/adapter/rest/`
-9. **Domain**: add new `DomainErrorCode` entry with `httpStatus` — the mapper updates itself automatically
+1. **[HIGH]** **Domain**: add input DTOs in `domain/dto/`, result models in `domain/model/`
+2. **[HIGH]** **Domain**: define inbound port interface in `domain/port/inbound/`
+3. **[HIGH]** **Domain**: define outbound port interface(s) in `domain/port/outbound/`
+4. **[CRITICAL]** **Domain**: add new exceptions in `domain/exception/` + entry in `DomainErrorCode`
+5. **[HIGH]** **Application**: create `@ApplicationScoped` service implementing the inbound port in `application/service/`
+6. **[HIGH]** **Infrastructure**: create persistence adapter implementing outbound port in `infrastructure/adapter/persistence/`
+7. **[MEDIUM]** **Infrastructure**: create `@Entity` + mapper in the same persistence package
+8. **[HIGH]** **Infrastructure**: create JAX-RS resource in `infrastructure/adapter/rest/`
+9. **[CRITICAL]** **Domain**: add new `DomainErrorCode` entry with `httpStatus` — the mapper updates itself automatically
 
 ---
 

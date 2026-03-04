@@ -1,12 +1,24 @@
 ---
 name: quarkus-vertical-slice
 description: Scaffold or extend a Quarkus project using Vertical Slice Architecture. Use when organizing code by feature rather than by layer, when multiple teams work on independent features, or when each feature has its own complexity and lifecycle.
+license: MIT
 argument-hint: "[action: scaffold|add-slice|add-feature] [name?]"
 metadata:
   short-description: Quarkus Vertical Slice — feature-first organization
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project using **Vertical Slice Architecture**. Apply all patterns below. Read existing code before making changes.
+
+## When to Apply
+
+- Multiple teams work on **independent features** and want to avoid merge conflicts
+- Each feature has its own complexity and lifecycle — they should be deployable independently
+- Adding a new feature slice (endpoint + handler + entity all in one folder)
+- The codebase is a **pre-microservice monolith** being prepared for extraction
+- Validating that feature slices do not import from each other
+- The user wants to organize code by business feature, not by technical layer
 
 ---
 
@@ -261,3 +273,16 @@ class CreateOrderEndpointTest {
 **Package visibility** — mark slice-internal classes as package-private (`class`, not `public class`) so other slices can't import them accidentally.
 
 **When to split into microservices** — each vertical slice maps cleanly to a microservice. When a slice grows too large, extract it: copy the slice folder, update the package, done.
+
+---
+
+## Pre-commit Checklist
+
+- [ ] **[CRITICAL]** Global exception handler in `shared/exception/` — no raw exceptions exposed to clients from any slice
+- [ ] **[CRITICAL]** Slices do not import classes from other slices' packages — cross-slice communication uses events only
+- [ ] **[HIGH]** Slice-internal classes are package-private (`class`, not `public class`) where possible
+- [ ] **[HIGH]** Coverage ≥ 80% per slice — handler unit tests + endpoint integration tests
+- [ ] **[HIGH]** Flyway migrations used — no `database.generation=create` in production
+- [ ] **[MEDIUM]** Cross-slice events use `shared/event/` records — no direct object sharing
+- [ ] **[MEDIUM]** OpenAPI annotations present on all public endpoints within each slice
+- [ ] **[LOW]** Each slice is self-contained enough to be extracted into a microservice without touching other slices

@@ -1,12 +1,24 @@
 ---
 name: quarkus-clean
 description: Scaffold or extend a Quarkus project using Clean Architecture (Uncle Bob). Use when the domain has complex business rules, multiple use cases, and must remain independent of frameworks, databases, and delivery mechanisms.
+license: MIT
 argument-hint: "[action: scaffold|add-usecase|add-entity|add-gateway] [name?]"
 metadata:
   short-description: Quarkus Clean Architecture — domain-centric with use case rings
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project using **Clean Architecture** (Robert C. Martin). Apply all patterns below. Read existing code before making changes.
+
+## When to Apply
+
+- Building a **long-lived enterprise service** with rich domain logic and many use cases
+- The domain must remain **framework-independent** — switching from Quarkus must be possible
+- Adding entities, use cases, or gateways to a Clean Architecture project
+- Validating that domain classes have zero imports from `jakarta.*` or `quarkus.*`
+- The project requires strict input/output boundaries for every use case
+- Auditing whether business rules have leaked into adapters or frameworks
 
 ---
 
@@ -236,3 +248,18 @@ class OrderTest {
 ```
 
 **Coverage: ≥ 80%** — focus on entity and use case rings (highest business value).
+
+---
+
+## Pre-commit Checklist
+
+- [ ] **[CRITICAL]** Entity ring classes have zero imports from `jakarta.*` or `quarkus.*`
+- [ ] **[CRITICAL]** Use case ring classes depend only on entity ring and port interfaces — no adapter imports
+- [ ] **[CRITICAL]** Global exception handler present — `BusinessRuleViolationMapper` maps domain exceptions without leaking stack traces
+- [ ] **[HIGH]** Every use case has a named input boundary interface (`CreateOrderInputBoundary`)
+- [ ] **[HIGH]** Every use case has a named output data record (`CreateOrderOutputData`) — no entity leakage to adapters
+- [ ] **[HIGH]** Coverage ≥ 80% with focus on entity and use case rings
+- [ ] **[HIGH]** Flyway migrations used — `database.generation=none` in production
+- [ ] **[MEDIUM]** OpenAPI annotations present on all adapter/controller endpoints
+- [ ] **[MEDIUM]** Outbox pattern applied for any use case that publishes domain events
+- [ ] **[LOW]** ADR (Architecture Decision Record) documents why Clean Architecture was chosen over Hexagonal

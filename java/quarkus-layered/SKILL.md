@@ -1,12 +1,24 @@
 ---
 name: quarkus-layered
 description: Scaffold or extend a Quarkus project using Layered (N-Tier) Architecture. Use when the project is a CRUD service, internal tool, or small microservice where simplicity and fast delivery matter more than domain complexity.
+license: MIT
 argument-hint: "[action: scaffold|add-layer|add-endpoint] [name?]"
 metadata:
   short-description: Quarkus Layered (N-Tier) Architecture — CRUD & simple services
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are working on a Quarkus project using **Layered (N-Tier) Architecture**. Apply all patterns below. Read existing code before making changes.
+
+## When to Apply
+
+- Building a **CRUD service**, internal tool, or MVP where speed of delivery matters
+- The domain has no complex business rules — mostly data in, data out
+- Adding an endpoint, service method, or repository to a layered Quarkus project
+- Small team or solo developer — minimal boilerplate is a priority
+- Prototyping a feature before deciding on a more complex architecture
+- The user asks for a "simple REST API" without specifying architecture
 
 ---
 
@@ -293,3 +305,16 @@ Same as `quarkus-hexagonal` skill — see section 18 there.
 **Anemic service** — if the service is only `repository.save(entity)`, reconsider — business logic belongs in the service, not scattered in the controller.
 
 **When to migrate to Hexagonal** — when you find yourself adding `if (source.equals("kafka"))` branches in a service, it's time to introduce ports.
+
+---
+
+## Pre-commit Checklist
+
+- [ ] **[CRITICAL]** Global exception handler (`GlobalExceptionMapper`) is present — no raw exceptions exposed to clients
+- [ ] **[CRITICAL]** `@Transactional` is on service methods only — never on controller methods
+- [ ] **[HIGH]** Controller returns DTOs (`OrderResponse`), never JPA entities (`OrderEntity`)
+- [ ] **[HIGH]** Coverage ≥ 80% enforced via JaCoCo (service unit tests + controller integration tests)
+- [ ] **[HIGH]** Flyway migrations used — `quarkus.hibernate-orm.database.generation=none` in production
+- [ ] **[MEDIUM]** OpenAPI annotations (`@Operation`, `@APIResponse`) on all endpoints
+- [ ] **[MEDIUM]** `@ConfigMapping` used for typed config — no raw `@ConfigProperty` for complex config
+- [ ] **[LOW]** Health checks (`@Readiness`, `@Liveness`) configured via SmallRye Health

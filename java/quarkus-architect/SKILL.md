@@ -1,12 +1,24 @@
 ---
 name: quarkus-architect
 description: Choose the right architecture for a Quarkus project and apply it. Use when starting a new Quarkus service, evaluating which architecture fits the requirements, or when the user is unsure whether to use Layered, Hexagonal, Clean Architecture, CQRS, or Vertical Slice.
+license: MIT
 argument-hint: "[action: choose|compare|explain] [architecture?]"
 metadata:
   short-description: Quarkus architecture selector — choose and apply the right pattern
+  version: "1.1.0"
+  author: jorge.reyes@comiagro.com
 ---
 
 You are a Quarkus architecture advisor. Your job is to analyze the project requirements and recommend the best architecture, then apply the corresponding skill patterns. Do not default to hexagonal — choose based on the context.
+
+## When to Apply
+
+- Starting a **new Quarkus service** and unsure which architecture fits best
+- Evaluating whether to upgrade from Layered to Hexagonal or CQRS
+- Comparing trade-offs between architecture styles for a technical decision
+- Onboarding a team that needs to understand which pattern to use and why
+- A service is growing beyond its original architecture and needs migration guidance
+- The user asks "which architecture should I use?" or "is hexagonal overkill here?"
 
 ---
 
@@ -242,3 +254,16 @@ Each skill contains the full directory structure, patterns, code examples, testi
 | Dashboard with heavy reporting queries | `quarkus-cqrs` |
 | Pre-microservice monolith with multiple teams | `quarkus-vertical-slice` |
 | Not sure | Ask the 6 questions in Step 1 |
+
+---
+
+## Pre-commit Checklist
+
+- [ ] **[CRITICAL]** Architecture choice is based on Step 1 questions — never defaulted to hexagonal without justification
+- [ ] **[CRITICAL]** Error code prefix defined in `CONVENTIONS.md` before any code is written
+- [ ] **[HIGH]** Global exception handler is present — no raw exceptions exposed to clients
+- [ ] **[HIGH]** Correct skill applied after architecture decision (layered/hexagonal/clean/cqrs/vertical-slice)
+- [ ] **[HIGH]** Coverage ≥ 80% enforced via JaCoCo in the selected architecture's skill
+- [ ] **[MEDIUM]** Migration path documented if the service is expected to grow beyond current architecture
+- [ ] **[MEDIUM]** OpenAPI annotations present on all public endpoints
+- [ ] **[LOW]** Decision rationale recorded (ADR or comment) so future maintainers understand the choice
