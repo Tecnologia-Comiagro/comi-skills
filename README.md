@@ -1,4 +1,4 @@
-# comi-skills
+# Comiagro Skills IA
 
 **Autor:** Jorge Ivan Reyes Valencia — jorge.reyes@comiagro.com
 **Empresa:** Comiagro S.A
