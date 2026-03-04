@@ -53,23 +53,28 @@ make list
 
 ```
 Claude Code  (~/.claude/skills/)
-SKILL                          SOURCE                        STATUS
-─────                          ──────                        ──────
-skills-updater                 meta/skills-updater           installed
-quarkus-architect              java/quarkus-architect        installed
-quarkus-layered                java/quarkus-layered          installed
-quarkus-hexagonal              java/quarkus                  installed
-quarkus-hexagonal-reactive     java/quarkus-reactive         installed
-quarkus-clean                  java/quarkus-clean            installed
-quarkus-cqrs                   java/quarkus-cqrs             installed
-quarkus-vertical-slice         java/quarkus-vertical-slice   installed
+SKILL                          SOURCE                      STATUS
+─────                          ──────                      ──────
+skills-updater                 meta/skills-updater         installed
+quarkus-hexagonal              java/quarkus                installed
+quarkus-hexagonal-reactive     java/quarkus-reactive       installed
+quarkus-vertical-slice         java/quarkus-vertical-slice installed
+quarkus-architect              java/quarkus-architect      installed
+quarkus-cqrs                   java/quarkus-cqrs           installed
+quarkus-clean                  java/quarkus-clean          installed
+quarkus-layered                java/quarkus-layered        installed
 
 OpenAI Codex  (~/.codex/skills/)
-SKILL                          SOURCE                        STATUS
-─────                          ──────                        ──────
-skills-updater                 meta/skills-updater           installed
-quarkus-architect              java/quarkus-architect        installed
-...
+SKILL                          SOURCE                      STATUS
+─────                          ──────                      ──────
+skills-updater                 meta/skills-updater         installed
+quarkus-hexagonal              java/quarkus                installed
+quarkus-hexagonal-reactive     java/quarkus-reactive       installed
+quarkus-vertical-slice         java/quarkus-vertical-slice installed
+quarkus-architect              java/quarkus-architect      installed
+quarkus-cqrs                   java/quarkus-cqrs           installed
+quarkus-clean                  java/quarkus-clean          installed
+quarkus-layered                java/quarkus-layered        installed
 ```
 
 ### 2. Instalar un skill específico

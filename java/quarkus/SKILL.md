@@ -213,7 +213,7 @@ src/main/java/com/comiagro/app/
 │   ├── dto/                         # Input objects passed between layers
 │   ├── exception/                   # Domain exceptions (no Quarkus/Jakarta imports)
 │   │   ├── DomainException.java     # Abstract base with errorCode field
-│   │   ├── DomainErrorCode.java     # Enum with COMI-{HTTP_FAMILY}{SEQ} format
+│   │   ├── DomainErrorCode.java     # Enum with {PREFIX}-{HTTP_FAMILY}{SEQ} format
 │   │   └── *Exception.java
 │   └── port/
 │       ├── inbound/                 # Use case interfaces
@@ -331,6 +331,8 @@ public class CreateOrderService implements CreateOrderUseCase {
 
 ## 4. Domain Exception Pattern
 
+> **Prefijo de error codes**: define el prefijo de tu empresa/sistema con `quarkus-architect` → Step 0 antes de escribir código. Reemplaza `{PREFIX}` en todo el proyecto por tu valor (ej. `ORD`, `PAY`, `AUTH`, `INV`).
+
 El **HTTP status vive en `DomainErrorCode`** — el mapper nunca necesita cambiar cuando se agrega una nueva excepción (Open/Closed Principle).
 
 ```java
@@ -338,12 +340,12 @@ El **HTTP status vive en `DomainErrorCode`** — el mapper nunca necesita cambia
 package com.comiagro.app.domain.exception;
 
 public enum DomainErrorCode {
-    // Format: COMI-{HTTP_FAMILY}{SEQUENTIAL}
-    INVALID_INPUT("COMI-4001", 400),
-    NOT_FOUND    ("COMI-4041", 404),
-    CONFLICT     ("COMI-4091", 409),
-    UNPROCESSABLE("COMI-4221", 422),
-    UNEXPECTED   ("COMI-5001", 500);
+    // Format: {PREFIX}-{HTTP_FAMILY}{SEQUENTIAL}
+    INVALID_INPUT("{PREFIX}-4001", 400),
+    NOT_FOUND    ("{PREFIX}-4041", 404),
+    CONFLICT     ("{PREFIX}-4091", 409),
+    UNPROCESSABLE("{PREFIX}-4221", 422),
+    UNEXPECTED   ("{PREFIX}-5001", 500);
 
     public final String code;
     public final int    httpStatus;
@@ -553,7 +555,7 @@ All errors return a consistent JSON structure:
 ```json
 {
   "statusCode": 404,
-  "errorCode": "COMI-4041",
+  "errorCode": "{PREFIX}-4041",
   "error": "OrderNotFoundException",
   "message": "Order not found: 42"
 }
@@ -715,7 +717,7 @@ class OrderResourceTest {
             .post("/orders")
         .then()
             .statusCode(404)
-            .body("errorCode", equalTo("COMI-4041"));
+            .body("errorCode", equalTo("{PREFIX}-4041"));
     }
 }
 ```

@@ -211,7 +211,7 @@ src/main/java/com/comiagro/app/
 ├── domain/                          # Inner hexagon — ZERO framework dependencies
 │   ├── model/                       # Entities & Value Objects (Rich Domain Model)
 │   ├── dto/                         # Input/Output — Java Records for immutability
-│   ├── exception/                   # Business exceptions (COMI-XXXX codes)
+│   ├── exception/                   # Business exceptions ({PREFIX}-XXXX codes)
 │   └── port/
 │       ├── inbound/                 # Use Case interfaces  (CreateOrderUseCase)
 │       └── outbound/                # Infrastructure SPI   (OrderRepository)
@@ -345,16 +345,18 @@ public record OrderRequest(String customerId, List<ItemDTO> items) {}
 
 ## 5. Domain Exception Pattern
 
+> **Prefijo de error codes**: define el prefijo de tu empresa/sistema con `quarkus-architect` → Step 0 antes de escribir código. Reemplaza `{PREFIX}` en todo el proyecto por tu valor (ej. `ORD`, `PAY`, `AUTH`, `INV`).
+
 El **HTTP status vive en `DomainErrorCode`** — el mapper nunca necesita cambiar cuando se agrega una nueva excepción (Open/Closed Principle).
 
 ```java
 // domain/exception/DomainErrorCode.java
 public enum DomainErrorCode {
-    INVALID_INPUT ("COMI-4001", 400),
-    NOT_FOUND     ("COMI-4041", 404),
-    CONFLICT      ("COMI-4091", 409),
-    UNPROCESSABLE ("COMI-4221", 422),
-    UNEXPECTED    ("COMI-5001", 500);
+    INVALID_INPUT ("{PREFIX}-4001", 400),
+    NOT_FOUND     ("{PREFIX}-4041", 404),
+    CONFLICT      ("{PREFIX}-4091", 409),
+    UNPROCESSABLE ("{PREFIX}-4221", 422),
+    UNEXPECTED    ("{PREFIX}-5001", 500);
 
     public final String code;
     public final int    httpStatus;
@@ -683,7 +685,7 @@ class OrderResourceTest {
             .post("/orders")
         .then()
             .statusCode(409)
-            .body("errorCode", equalTo("COMI-4091"));
+            .body("errorCode", equalTo("{PREFIX}-4091"));
     }
 }
 ```
